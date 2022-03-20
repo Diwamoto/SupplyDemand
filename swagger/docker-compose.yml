@@ -1,10 +1,5 @@
 version: "3"
 services:
-  editor:
-    image: swaggerapi/swagger-editor
-    container_name: editor
-    ports:
-      - 8080:8080
   ui:
     image: redocly/redoc
     container_name: ui
@@ -13,12 +8,12 @@ services:
     environment:
       SPEC_URL: api.yml
     ports:
-      - 8081:80
+      - 8080:80
   mock:
     image: stoplight/prism:3
     container_name: mock
     ports:
-      - 8082:4010
+      - 8081:4010
     command: mock -h 0.0.0.0 /api.yml
     volumes:
       - ./api.yml:/api.yml

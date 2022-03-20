@@ -1,111 +1,529 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
-  title: Swagger Petstore
+  version: v1
+  title: SupplyDemand API
+  description: SupplyDemand API Reference
   license:
-    name: MIT
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
 servers:
-  - url: http://petstore.swagger.io/v1
+  - url: https://api.supplydemand.com/dev/v1
+    description: 開発環境
+  - url: https://api.suppludemand.com/stg/v1
+    description: ステージング環境
+  - url: https://api.supplydemand.com/v1
+    description: 本番環境
+tags:
+  - name: user
+    description: ユーザ情報に関するAPI
+  - name: supply
+    description: 供給情報に関するAPI
+  - name: demand
+    description: 需要情報に関するAPI
 paths:
-  /pets:
+  /users:
     get:
-      summary: List all pets test
-      operationId: listPets
+      summary: ユーザ情報取得API
       tags:
-        - pets
-      parameters:
-        - name: limit
-          in: query
-          description: How many items to return at one time (max 100)
-          required: false
-          schema:
-            type: integer
-            format: int32
+       - user
+      operationId: getUsers
       responses:
         '200':
-          description: A paged array of pets
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
-          content:
-            application/json:    
-              schema:
-                $ref: "#/components/schemas/Pets"
-        default:
-          description: unexpected error
+          description: userの一覧
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Users"
+        '404':
+          description: ユーザ情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
     post:
-      summary: Create a pet
-      operationId: createPets
+      summary: ユーザ追加API
       tags:
-        - pets
+       - user
+      operationId: createUsers
       responses:
         '201':
-          description: Null response
-        default:
-          description: unexpected error
+          description: 作成成功
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  /pets/{petId}:
+                $ref: "#/components/schemas/User"
+        '409':
+          description: 既にユーザがある
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/409"
+  /users/{userId}:
     get:
-      summary: Info for a specific pet
-      operationId: showPetById
+      summary: ユーザ情報
       tags:
-        - pets
+       - user
+      operationId: getUsersWithUserId
       parameters:
-        - name: petId
+        - name: userId
           in: path
           required: true
-          description: The id of the pet to retrieve
+          description: 取得するユーザのID
           schema:
             type: string
       responses:
         '200':
-          description: Expected response to a valid request
+          description: 指定IDのユーザ情報
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pet"
-        default:
-          description: unexpected error
+                $ref: "#/components/schemas/Users"
+        '404':
+          description: ユーザ情報が存在しない
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/404"
+    put:
+      summary: ユーザ情報変更
+      tags:
+       - user
+      operationId: updateUser
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '201':
+          description: ユーザがなかった場合は作成する
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: 該当のユーザが存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    delete:
+      summary: ユーザ削除API
+      tags:
+       - user
+      operationId: deleteUser
+      responses:
+        '204':
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/204"
+        '404':
+          description: 該当のユーザが存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+  /supplies:
+    get:
+      summary: 供給情報取得API
+      tags:
+       - supply
+      operationId: getSupplies
+      responses:
+        '200':
+          description: 供給情報一覧
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supplies"
+        '404':
+          description: 供給情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    post:
+      summary: 供給情報追加API
+      tags:
+       - supply
+      operationId: createSupplies
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supply"
+        '409':
+          description: 既に供給がある
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/409"
+  /supplies/{supplyId}:
+    get:
+      summary: 供給情報取得API
+      tags:
+       - supply
+      operationId: getUsersWithUserId
+      parameters:
+        - name: supplyId
+          in: path
+          required: true
+          description: 取得する供給のID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 指定IDの供給情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supply"
+        '404':
+          description: 供給情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    put:
+      summary: 供給情報更新API
+      tags:
+       - supply
+      operationId: updateSupply
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supply"
+        '201':
+          description: 供給情報がなかった場合は作成する
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: 該当の供給情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    delete:
+      summary: 供給情報削除API
+      tags:
+       - supply
+      operationId: deleteSupply
+      responses:
+        '204':
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/204"
+        '404':
+          description: 該当の供給情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+  /demands:
+    get:
+      summary: 需要情報取得API
+      tags:
+       - demand
+      operationId: getSupplies
+      responses:
+        '200':
+          description: 需要情報一覧
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supplies"
+        '404':
+          description: 需要情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    post:
+      summary: 需要情報追加API
+      tags:
+       - demand
+      operationId: createSupplies
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supply"
+        '409':
+          description: 既に需要がある
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/409"
+  /demands/{demandId}:
+    get:
+      summary: 需要情報取得API
+      tags:
+       - demand
+      operationId: getDemandsWithDemandId
+      parameters:
+        - name: demandId
+          in: path
+          required: true
+          description: 取得する需要のID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 指定IDの需要を取得する
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Demand"
+        '404':
+          description: 供給情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    put:
+      summary: 需要情報更新API
+      tags:
+       - demand
+      operationId: updateSupply
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supply"
+        '201':
+          description: 需要情報がなかった場合は作成する
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: 該当の需要が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
+    delete:
+      summary: 需要情報削除API
+      tags:
+       - demand
+      operationId: deleteDemand
+      responses:
+        '204':
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/204"
+        '404':
+          description: 該当の需要情報が存在しない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/404"
 components:
   schemas:
-    Pet:
+    User:
       type: object
       required:
         - id
         - name
+        - password
+        - email
+        - age
+        - birthday
+        - address
+        - phone
+        - created_at
+        - updated_at
       properties:
         id:
           type: integer
           format: int64
+          example: 100
         name:
           type: string
-        tag:
+          example: Michel Daniel
+        password:
           type: string
-    Pets:
-      type: array
-      items:
-        $ref: "#/components/schemas/Pet"
-    Error:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
+          format: password
+          example: XXXXXXXXXX
+        email:
+          type: string
+          format: email
+        age:
           type: integer
           format: int32
+          example: 25
+        birthday:
+          type: string
+          format: date
+        address:
+          type: string
+          example: 東京都港区1-1
+        phone:
+          type: integer 
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+        deleted_at:
+          type: string
+          format: date
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Supply:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - amount
+        - description
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          example: 20001
+        title:
+          type: string
+          example: Go言語を使ったシステム開発
+        amount:
+          type: integer
+          example: 500000
+        description:
+          type: string
+          example: システムを開発します。
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+        deleted_at:
+          type: string
+          format: date
+    Supplies:
+      type: array
+      items:
+        $ref: "#/components/schemas/Supply"
+    Demand:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - amount
+        - description
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          example: 20001
+        title:
+          type: string
+          example: Go言語を使ったシステム開発
+        amount:
+          type: integer
+          example: 500000
+        description:
+          type: string
+          example: 顔認識システムの開発をお願いしたいです。
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+        deleted_at:
+          type: string
+          format: date
+    Demands:
+      type: array
+      items:
+        $ref: "#/components/schemas/Demand"
+    Category:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: システム開発
+        description:
+          type: string
+          example: システム開発に関する案件
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+        deleted_at:
+          type: string
+          format: date
+    Categories:
+      type: array
+      items:
+        $ref: "#/components/schemas/Category"
+    404:
+      type: object
+      properties:
         message:
           type: string
+          example: Not Found
+    409:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Conflict
+    204:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No Content
+    500:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Internal Server Error
