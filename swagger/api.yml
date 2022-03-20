@@ -21,6 +21,24 @@ tags:
   - name: demand
     description: 需要情報に関するAPI
 paths:
+  /:
+    get:
+      summary: APIの情報取得
+      operationId: getAPIInfomation
+      responses:
+        '200':
+          description: APIのバージョン情報取得
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: SupplyDemand API v0.0.1
+                  status:
+                    type: string
+                    example: Alive
   /users:
     get:
       summary: ユーザ情報取得API
